@@ -1,0 +1,9 @@
+{
+  "alias": "",
+  "host": "",
+  "port": 27017,
+  "db_name": "",
+  "username": null,
+  "password": null,
+  "authentication_source": ""
+}
