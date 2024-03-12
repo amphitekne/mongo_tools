@@ -15,10 +15,10 @@ This guide provides a straightforward approach to interact with your MongoDB dat
    commands:
     * To transfer a specific collection:
 
-      ```dpython transfer_collection.py --source alias_of_your_source_db --target alias_of_your_target_db --collection name_of_the_collection_to_copy```
+      ```python transfer_collection.py --source alias_of_your_source_db --target alias_of_your_target_db --collection name_of_the_collection_to_copy```
     * To transfer an entire database:
 
-      ```dpython transfer_database.py --source alias_of_your_source_db --target alias_of_your_target_db```
+      ```python transfer_database.py --source alias_of_your_source_db --target alias_of_your_target_db```
 
 2. **Customize Your Data Pipeline:**
    Leverage the functions and classes provided in manager.py and database.py to tailor your data management pipeline.
