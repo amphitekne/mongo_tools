@@ -10,6 +10,13 @@ class DataBase:
         self.__get_db(configuration['db_name'])
 
     def __connect(self):
+        if self.configuration["uri"] != "":
+            try:
+                self.client = pymongo.MongoClient(self.configuration["uri"])
+                return
+            except Exception as ex:
+                print(f"Failed to connect to database using uri. >> {type(ex).__name__}")
+
         self.client = pymongo.MongoClient(
             host=self.configuration['host'],
             port=self.configuration['port'],
@@ -22,8 +29,8 @@ class DataBase:
         try:
             self.__db = self.client[db_name]
             print(f"Database <{self.configuration['alias']}> successfully connected.")
-        except:
-            raise Exception(f"Database <{self.configuration['alias']}> is not connected.")
+        except Exception as ex:
+            print(f"Database <{self.configuration['alias']}> is not connected. >> {type(ex).__name__}")
 
     @property
     def get_db(self):

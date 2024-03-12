@@ -1,0 +1,10 @@
+{
+  "alias": "alias-of-your-database-with-uri",
+  "db_name": "name-of-your-database-with-uri",
+  "uri": "your uri",
+  "host": null,
+  "port": null,
+  "username": null,
+  "password": null,
+  "authentication_source": null
+}
