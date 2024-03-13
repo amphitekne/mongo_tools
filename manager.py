@@ -15,10 +15,31 @@ def transfer_individual_docs(origin_db: DataBase, origin_collection_name: str, o
     return True
 
 
+def copy_index(origin_db: DataBase, origin_collection_name: str,
+               target_db: DataBase, target_collection_name: str):
+    indexes_to_copy = [index for index in origin_db.get_collection(origin_collection_name).list_indexes() if
+                       index['name'] != '_id_']
+    # Copy each index to the target collection
+    for index in indexes_to_copy:
+        # Extract index fields and options
+        index_fields = index['key'].items()
+        options = {k: v for k, v in index.items() if k not in ['v', 'key', 'ns']}
+        # Create the index in the target collection
+        target_db.get_collection(target_collection_name).create_index(list(index_fields), **options)
+
+
 def transfer_complete_collection(origin_db: DataBase, origin_collection_name: str,
                                  target_db: DataBase, target_collection_name: str,
                                  delete_previous_docs: bool = False) -> bool:
     origin_collection_documents = origin_db.get_collection_documents(origin_collection_name)
+
+    db = target_db.get_db
+    temp_id = db[target_collection_name].insert_one({}).inserted_id
+    db[target_collection_name].delete_one({'_id': temp_id})
+    db[target_collection_name].find_one({"_id": temp_id})
+    copy_index(origin_db, origin_collection_name,
+               target_db, target_collection_name)
+
     target_db.store_documents_in_collection(collection_name=target_collection_name,
                                             documents=origin_collection_documents,
                                             delete_existing=delete_previous_docs)
