@@ -30,16 +30,16 @@ def copy_index(origin_db: DataBase, origin_collection_name: str,
 
 def transfer_complete_collection(origin_db: DataBase, origin_collection_name: str,
                                  target_db: DataBase, target_collection_name: str,
-                                 delete_previous_docs: bool = False) -> bool:
+                                 delete_previous_docs: bool = False,
+                                 include_index: bool = False) -> bool:
     origin_collection_documents = origin_db.get_collection_documents(origin_collection_name)
-
-    db = target_db.get_db
-    temp_id = db[target_collection_name].insert_one({}).inserted_id
-    db[target_collection_name].delete_one({'_id': temp_id})
-    db[target_collection_name].find_one({"_id": temp_id})
-    copy_index(origin_db, origin_collection_name,
-               target_db, target_collection_name)
-
+    if include_index:
+        db = target_db.get_db
+        temp_id = db[target_collection_name].insert_one({}).inserted_id
+        db[target_collection_name].delete_one({'_id': temp_id})
+        db[target_collection_name].find_one({"_id": temp_id})
+        copy_index(origin_db, origin_collection_name,
+                   target_db, target_collection_name)
     target_db.store_documents_in_collection(collection_name=target_collection_name,
                                             documents=origin_collection_documents,
                                             delete_existing=delete_previous_docs)

@@ -21,19 +21,22 @@ def main():
     parser.add_argument('--source', type=str, help='Source mongo data base alias')
     parser.add_argument('--target', type=str, help='Target mongo data base alias')
     parser.add_argument('--collection', type=str, help='Name of the collection to transfer')
+    parser.add_argument('--include-index', action=argparse.BooleanOptionalAction, help='')
 
     # Parse the arguments
     args = parser.parse_args()
     source = args.source
     target = args.target
     collection = args.collection
+    include_index = args.include_index
 
     print("Connecting to databases...")
     data_bases = connect(source, target)
     print("Copying collection...")
     manager.transfer_complete_collection(origin_db=data_bases[source], origin_collection_name=collection,
                                          target_db=data_bases[target], target_collection_name=collection,
-                                         delete_previous_docs=True)
+                                         delete_previous_docs=True,
+                                         include_index=include_index)
     print("Done.")
 
 

@@ -2,15 +2,16 @@ import pymongo
 
 
 class DataBase:
-    def __init__(self, configuration):
-        self.client = None
-        self.__db = None
-        self.configuration = configuration
-        self.__connect()
-        self.__get_db(configuration['db_name'])
+    client = None
+    __db = None
+    mongodb_version = None
 
-    def __connect(self):
-        if self.configuration["uri"] != "":
+    def __init__(self, configuration):
+        self.configuration = configuration
+        self.__connect(configuration['db_name'])
+
+    def __connect(self, db_name: str):
+        if self.configuration["uri"] not in ["", None]:
             try:
                 self.client = pymongo.MongoClient(self.configuration["uri"])
                 return
@@ -24,11 +25,11 @@ class DataBase:
             password=self.configuration['password'],
             authSource=self.configuration['authentication_source'],
         )
-
-    def __get_db(self, db_name: str):
         try:
+            self.mongodb_version = self.client.server_info()["version"]
             self.__db = self.client[db_name]
             print(f"Database <{self.configuration['alias']}> successfully connected.")
+
         except Exception as ex:
             print(f"Database <{self.configuration['alias']}> is not connected. >> {type(ex).__name__}")
 
