@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  dps:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mongo_tools
+    restart: always
+    #command: tail -F anything
+    volumes:
+      - ./scripts:/app/scripts
+      - ./notebooks:/app/notebooks
+      - ./config:/app/config
+    ports:
+      - 8888:8888
