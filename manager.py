@@ -79,22 +79,42 @@ def delete_collection_with_backup(origin_db: DataBase, origin_collection_name: s
     print(f'Deletion done.')
 
 
-def add_new_field_to_complete_collection(db: DataBase, collection_name: str,
-                                         new_field_name: str, new_field_value: any) -> bool:
-    collection = db.get_collection(collection_name)
+def add_new_field_to_collection(origin_db: DataBase, origin_collection_name: str,
+                                new_field_name: str, new_field_value: any) -> bool:
+    collection = origin_db.get_collection(origin_collection_name)
     collection.update_many({}, {"$set": {new_field_name: new_field_value}})
     return True
 
 
-def add_new_field_to_complete_collection_with_backup(origin_db: DataBase, origin_collection_name: str,
-                                                     new_field_name: str, new_field_value: any,
-                                                     backup_db: DataBase
-                                                     ) -> bool:
+def remove_field_to_collection(origin_db: DataBase, origin_collection_name: str,
+                               field_name: str, ) -> bool:
+    collection = origin_db.get_collection(origin_collection_name)
+    collection.update_many({}, {"$unset": {field_name: ""}})
+    return True
+
+
+def add_new_field_to_collection_with_backup(origin_db: DataBase, origin_collection_name: str,
+                                            new_field_name: str, new_field_value: any,
+                                            backup_db: DataBase, backup_collection_name: str
+                                            ) -> bool:
     # backup
     transfer_complete_collection(origin_db=origin_db, origin_collection_name=origin_collection_name,
-                                 target_db=backup_db, target_collection_name=origin_collection_name,
+                                 target_db=backup_db, target_collection_name=backup_collection_name,
                                  delete_previous_docs=True)
     print(f'backup done on {backup_db.name}, collection: {origin_collection_name}')
     collection = origin_db.get_collection(origin_collection_name)
     collection.update_many({}, {"$set": {new_field_name: new_field_value}})
+    return True
+
+
+def remove_field_to_collection_with_backup(origin_db: DataBase, origin_collection_name: str,
+                                           field_name: str, backup_db: DataBase, backup_collection_name: str
+                                           ) -> bool:
+    # backup
+    transfer_complete_collection(origin_db=origin_db, origin_collection_name=origin_collection_name,
+                                 target_db=backup_db, target_collection_name=backup_collection_name,
+                                 delete_previous_docs=True)
+    print(f'backup done on {backup_db.name}, collection: {origin_collection_name}')
+    collection = origin_db.get_collection(origin_collection_name)
+    collection.update_many({}, {"$unset": {field_name: ""}})
     return True

@@ -1,10 +1,16 @@
 {
-  "alias": "alias-of-your-database-with-uri",
-  "db_name": "name-of-your-database-with-uri",
+  "alias": "alias-of-your-database",
   "uri": "your uri",
-  "host": null,
-  "port": null,
-  "username": null,
-  "password": null,
-  "authentication_source": null
+  "host": {
+    "ip": null,
+    "user_name": null,
+    "password": null,
+    "local_port": null,
+  },
+  "mongo": {
+    "db_name": "name-of-your-database",
+    "username":  null,
+    "password": null,
+    "authentication_source": null,
+  }
 }
